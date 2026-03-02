@@ -1,9 +1,11 @@
 import express from "express";
-import { dbAll, dbRun, dbGet } from "../lib/db.js";
+import { dbAll, dbRun } from "../lib/db.js";
 import { authRequired } from "../middleware/auth.js";
+import pool from "../lib/db.js";
 
 const router = express.Router();
 
+// In questa costante definisco i prompt guidati usati nel diario.
 const CBT_PROMPTS = [
   {
     id: "pensiero_automatico",
@@ -73,10 +75,12 @@ const CBT_PROMPTS = [
 ];
 
 router.get("/prompts", authRequired, (_req, res) => {
+  // In questa rotta ritorno i prompt statici senza passare dal database.
   res.json({ prompts: CBT_PROMPTS });
 });
 
 router.get("/", authRequired, async (req, res) => {
+  // In questa rotta carico le ultime voci diario dell'utente autenticato.
   try {
     const entries = await dbAll(
       `SELECT id, prompt_id, situation, automatic_thought, emotions,
@@ -95,6 +99,7 @@ router.get("/", authRequired, async (req, res) => {
 });
 
 router.post("/", authRequired, async (req, res) => {
+  // In questa rotta salvo una nuova voce e verifico eventuali badge per milestone di scrittura.
   try {
     const { promptId, situation, automaticThought, emotions, cognitiveDistortion, rationalResponse, content } = req.body;
 
@@ -102,33 +107,44 @@ router.post("/", authRequired, async (req, res) => {
       return res.status(400).json({ error: "Il contenuto non può essere vuoto" });
     }
 
-    const result = await dbRun(
-      `INSERT INTO journal_entries
-        (user_id, prompt_id, situation, automatic_thought, emotions, cognitive_distortion, rational_response, content)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-      [
-        req.user.id,
-        promptId || null,
-        situation || null,
-        automaticThought || null,
-        emotions || null,
-        cognitiveDistortion || null,
-        rationalResponse || null,
-        content.trim()
-      ]
-    );
+    const conn = await pool.getConnection();
+    try {
+      await conn.beginTransaction();
+      const [insertResult] = await conn.query(
+        `INSERT INTO journal_entries
+          (user_id, prompt_id, situation, automatic_thought, emotions, cognitive_distortion, rational_response, content)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          req.user.id,
+          promptId || null,
+          situation || null,
+          automaticThought || null,
+          emotions || null,
+          cognitiveDistortion || null,
+          rationalResponse || null,
+          content.trim()
+        ]
+      );
 
-    const count = await dbGet(`SELECT COUNT(*) as c FROM journal_entries WHERE user_id = ?`, [req.user.id]);
-    const badges = [];
-    if (count.c === 1) badges.push("primo_diario");
-    if (count.c === 10) badges.push("scrittore");
-    if (count.c === 30) badges.push("narratore");
+      const [countRows] = await conn.query(`SELECT COUNT(*) as c FROM journal_entries WHERE user_id = ?`, [req.user.id]);
+      const count = countRows[0];
+      const badges = [];
+      if (count.c === 1) badges.push("primo_diario");
+      if (count.c === 10) badges.push("scrittore");
+      if (count.c === 30) badges.push("narratore");
 
-    for (const b of badges) {
-      await dbRun(`INSERT IGNORE INTO achievements (user_id, badge_type) VALUES (?, ?)`, [req.user.id, b]).catch(() => {});
+      for (const b of badges) {
+        await conn.query(`INSERT IGNORE INTO achievements (user_id, badge_type) VALUES (?, ?)`, [req.user.id, b]);
+      }
+
+      await conn.commit();
+      res.status(201).json({ id: insertResult.insertId, newBadges: badges });
+    } catch (txErr) {
+      await conn.rollback();
+      throw txErr;
+    } finally {
+      conn.release();
     }
-
-    res.status(201).json({ id: result.lastID, newBadges: badges });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Errore interno" });
@@ -136,6 +152,7 @@ router.post("/", authRequired, async (req, res) => {
 });
 
 router.delete("/:id", authRequired, async (req, res) => {
+  // In questa rotta consento l'eliminazione solo della voce appartenente all'utente.
   try {
     await dbRun(`DELETE FROM journal_entries WHERE id = ? AND user_id = ?`, [req.params.id, req.user.id]);
     res.json({ message: "Voce eliminata" });

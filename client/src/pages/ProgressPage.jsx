@@ -5,6 +5,7 @@ import { isAuthenticated } from '../services/auth.js'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 
 function ProgressPage() {
+  // Tengo insieme progressi, obiettivi e badge in un'unica vista di avanzamento.
   const [statistiche, setStatistiche] = useState(null)
   const [badge, setBadge] = useState({ earned: [], all: [] })
   const [obiettivi, setObiettivi] = useState([])
@@ -89,7 +90,7 @@ function ProgressPage() {
     <section className="page">
       <div className="page-header">
         <h1>I tuoi progressi</h1>
-        <p>Monitora il tuo percorso di crescita personale e benessere</p>
+        <p>Guarda i passi che stai facendo, anche quelli piccoli.</p>
       </div>
 
       <div className="tabs">

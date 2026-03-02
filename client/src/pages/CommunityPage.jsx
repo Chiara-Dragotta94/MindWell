@@ -6,6 +6,7 @@ import { isAuthenticated } from '../services/auth.js'
 const CATEGORIES = ['tutti', 'generale', 'ansia', 'depressione', 'relazioni', 'crescita', 'mindfulness']
 
 function CommunityPage() {
+  // Gestisco la bacheca community con filtri, creazione post e lista discussioni.
   const [listaPost, setListaPost] = useState([])
   const [categoriaAttiva, setCategoriaAttiva] = useState('tutti')
   const [mostraForm, setMostraForm] = useState(false)
@@ -35,7 +36,7 @@ function CommunityPage() {
   const handlePost = async (e) => {
     e.preventDefault()
     if (!isAuthenticated()) { navigate('/login'); return }
-    if (!titoloPost.trim() || !contenutoPost.trim()) { setMessaggioErrore('Titolo e contenuto sono obbligatori'); return }
+    if (!titoloPost.trim() || !contenutoPost.trim()) { setMessaggioErrore('Per pubblicare, scrivi sia un titolo sia il messaggio.'); return }
     setMessaggioErrore(null)
     setSalvataggio(true)
     try {
@@ -62,7 +63,7 @@ function CommunityPage() {
         <div className="flex-between">
           <div>
             <h1>Community</h1>
-            <p>Condividi esperienze, trova supporto e riduci il senso di solitudine</p>
+            <p>Condividi quello che vivi e trova persone che ti capiscono.</p>
           </div>
           {isAuthenticated() && (
             <button className="btn btn-primary" onClick={() => setMostraForm(!mostraForm)}>
@@ -94,7 +95,7 @@ function CommunityPage() {
               </select>
             </div>
             <button className="btn btn-primary" type="submit" disabled={salvataggio}>
-              {salvataggio ? 'Pubblicazione...' : 'Pubblica'}
+              {salvataggio ? 'Sto pubblicando...' : 'Pubblica'}
             </button>
           </form>
         </div>
@@ -110,7 +111,7 @@ function CommunityPage() {
 
       {listaPost.length === 0 && (
         <div className="card text-center">
-          <p className="text-secondary">Nessun post in questa categoria. Sii il primo a condividere!</p>
+          <p className="text-secondary">Qui non c'è ancora nulla. Se vuoi, puoi iniziare tu.</p>
         </div>
       )}
 

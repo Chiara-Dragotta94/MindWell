@@ -85,11 +85,12 @@ const EXERCISES = [
 
 const BREATHING_PATTERNS = [
   { name: 'Respirazione 4-7-8', inhale: 4, hold: 7, exhale: 8, desc: 'Ideale per calmare ansia e favorire il sonno' },
-  { name: 'Respirazione quadrata', inhale: 4, hold: 4, exhale: 4, holdAfter: 4, desc: 'Equilibra il sistema nervoso' },
-  { name: 'Respirazione diaframmatica', inhale: 4, hold: 0, exhale: 6, desc: 'Attiva il sistema parasimpatico' },
+  { name: 'Respirazione quadrata', inhale: 4, hold: 4, exhale: 4, holdAfter: 4, desc: 'Aiuta a ritrovare calma e concentrazione' },
+  { name: 'Respirazione diaframmatica', inhale: 4, hold: 0, exhale: 6, desc: 'Rallenta il ritmo e scioglie la tensione' },
 ]
 
 function MindfulnessPage() {
+  // Gestisco due modalità: esercizi step-by-step e respirazione guidata con timer.
   const [tab, setTab] = useState('esercizi')
   const [activeExercise, setActiveExercise] = useState(null)
   const [currentStep, setCurrentStep] = useState(0)
@@ -183,7 +184,7 @@ function MindfulnessPage() {
     <section className="page">
       <div className="page-header">
         <h1>Mindfulness e Rilassamento</h1>
-        <p>Esercizi guidati per ridurre stress, ansia e migliorare il tuo benessere</p>
+        <p>Esercizi semplici per respirare meglio, calmarti e ritrovare equilibrio.</p>
       </div>
 
       <div className="tabs">

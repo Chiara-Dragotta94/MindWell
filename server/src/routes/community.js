@@ -1,10 +1,12 @@
 import express from "express";
 import { dbAll, dbRun, dbGet } from "../lib/db.js";
 import { authRequired } from "../middleware/auth.js";
+import pool from "../lib/db.js";
 
 const router = express.Router();
 
 router.get("/posts", authRequired, async (req, res) => {
+  // In questa rotta espongo la bacheca community, con filtro facoltativo per categoria.
   try {
     const category = req.query.category;
     let sql = `
@@ -31,6 +33,7 @@ router.get("/posts", authRequired, async (req, res) => {
 });
 
 router.get("/posts/:id", authRequired, async (req, res) => {
+  // In questa rotta carico dettaglio post e commenti in una sola risposta API.
   try {
     const post = await dbGet(
       `SELECT p.id, p.title, p.content, p.category, p.created_at, p.user_id,
@@ -58,6 +61,7 @@ router.get("/posts/:id", authRequired, async (req, res) => {
 });
 
 router.post("/posts", authRequired, async (req, res) => {
+  // In questa rotta creo un nuovo post e gestisco il badge del primo contributo.
   try {
     const { title, content, category } = req.body;
     if (!title?.trim() || !content?.trim()) {
@@ -67,17 +71,28 @@ router.post("/posts", authRequired, async (req, res) => {
     const validCategories = ["generale", "ansia", "depressione", "relazioni", "crescita", "mindfulness"];
     const cat = validCategories.includes(category) ? category : "generale";
 
-    const result = await dbRun(
-      `INSERT INTO posts (user_id, title, content, category) VALUES (?, ?, ?, ?)`,
-      [req.user.id, title.trim(), content.trim(), cat]
-    );
+    const conn = await pool.getConnection();
+    try {
+      await conn.beginTransaction();
+      const [insertResult] = await conn.query(
+        `INSERT INTO posts (user_id, title, content, category) VALUES (?, ?, ?, ?)`,
+        [req.user.id, title.trim(), content.trim(), cat]
+      );
 
-    const count = await dbGet(`SELECT COUNT(*) as c FROM posts WHERE user_id = ?`, [req.user.id]);
-    if (count.c === 1) {
-      await dbRun(`INSERT IGNORE INTO achievements (user_id, badge_type) VALUES (?, 'primo_post')`, [req.user.id]).catch(() => {});
+      const [countRows] = await conn.query(`SELECT COUNT(*) as c FROM posts WHERE user_id = ?`, [req.user.id]);
+      const count = countRows[0];
+      if (count.c === 1) {
+        await conn.query(`INSERT IGNORE INTO achievements (user_id, badge_type) VALUES (?, 'primo_post')`, [req.user.id]);
+      }
+
+      await conn.commit();
+      res.status(201).json({ id: insertResult.insertId });
+    } catch (txErr) {
+      await conn.rollback();
+      throw txErr;
+    } finally {
+      conn.release();
     }
-
-    res.status(201).json({ id: result.lastID });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Errore interno" });
@@ -85,6 +100,7 @@ router.post("/posts", authRequired, async (req, res) => {
 });
 
 router.post("/posts/:id/comments", authRequired, async (req, res) => {
+  // In questa rotta inserisco un commento solo dopo aver verificato che il post esista.
   try {
     const { content } = req.body;
     if (!content?.trim()) {
@@ -107,6 +123,7 @@ router.post("/posts/:id/comments", authRequired, async (req, res) => {
 });
 
 router.post("/posts/:id/like", authRequired, async (req, res) => {
+  // In questa rotta implemento like/unlike come toggle idempotente per l'utente corrente.
   try {
     const existing = await dbGet(
       `SELECT * FROM post_likes WHERE user_id = ? AND post_id = ?`,

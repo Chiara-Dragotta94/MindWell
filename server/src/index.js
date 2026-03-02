@@ -13,6 +13,7 @@ import chatbotRouter from "./routes/chatbot.js";
 
 dotenv.config();
 
+// In questo file preparo l'app Express e monto tutte le API sotto /api.
 const app = express();
 const PORT = process.env.PORT || 4000;
 const originiConsentite = (process.env.CORS_ORIGINS || "http://localhost:5173")
@@ -50,6 +51,7 @@ app.use("/api/chatbot", chatbotRouter);
 
 initDb()
   .then(() => {
+    // Avvio il server solo dopo init DB riuscita, per evitare errori runtime su tabelle mancanti.
     app.listen(PORT, () => {
       console.log(`MindWell server running on http://localhost:${PORT}`);
     });

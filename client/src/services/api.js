@@ -11,6 +11,7 @@ export function setToken(token) {
 }
 
 export async function apiRequest(path, options = {}) {
+  // Centralizzo tutte le chiamate API, così gestisco token ed errori in un solo punto.
   const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) }
   const token = getToken()
   if (token) headers.Authorization = `Bearer ${token}`

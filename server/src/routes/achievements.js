@@ -4,6 +4,7 @@ import { authRequired } from "../middleware/auth.js";
 
 const router = express.Router();
 
+// In questa mappa tengo il dizionario badge in un unico posto, così frontend e backend restano allineati.
 const BADGE_META = {
   benvenuto: { name: "Benvenuto!", icon: "🌟", description: "Ti sei registrato su MindWell" },
   primo_umore: { name: "Prima emozione", icon: "🎯", description: "Hai registrato il tuo primo umore" },
@@ -20,6 +21,7 @@ const BADGE_META = {
 };
 
 router.get("/", authRequired, async (req, res) => {
+  // In questa rotta ritorno sia i badge ottenuti sia la lista completa con stato locked/unlocked.
   try {
     const earned = await dbAll(
       `SELECT badge_type, earned_at FROM achievements WHERE user_id = ? ORDER BY earned_at DESC`,

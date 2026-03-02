@@ -4,6 +4,7 @@ import { apiRequest } from '../services/api.js'
 import { isAuthenticated } from '../services/auth.js'
 
 function PostDetailPage() {
+  // Mostro il dettaglio di un post con interazioni social (like/commenti).
   const { postId } = useParams()
   const [postDettaglio, setPostDettaglio] = useState(null)
   const [commenti, setCommenti] = useState([])
@@ -95,15 +96,15 @@ function PostDetailPage() {
             <div className="form-row">
               <textarea
                 value={nuovoCommento} onChange={(e) => setNuovoCommento(e.target.value)}
-                placeholder="Scrivi un commento di supporto..." rows={3}
+                placeholder="Scrivi una risposta gentile o un incoraggiamento..." rows={3}
               />
             </div>
             <button className="btn btn-primary btn-sm" type="submit" disabled={invioCommento}>
-              {invioCommento ? 'Invio...' : 'Commenta'}
+              {invioCommento ? 'Sto inviando...' : 'Commenta'}
             </button>
           </form>
         )}
-        {commenti.length === 0 && <p className="text-secondary text-sm">Nessun commento ancora. Sii il primo!</p>}
+        {commenti.length === 0 && <p className="text-secondary text-sm">Ancora nessun commento. Se vuoi, inizia tu.</p>}
         {commenti.map((c) => (
           <div key={c.id} className="comment-item">
             <div className="flex-gap" style={{ marginBottom: '0.3rem' }}>

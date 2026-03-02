@@ -4,6 +4,7 @@ import { apiRequest } from '../services/api.js'
 import { isAuthenticated } from '../services/auth.js'
 
 function DashboardPage() {
+  // Compongo la panoramica iniziale con azioni rapide, statistiche e riepiloghi utili.
   const [utente, setUtente] = useState(null)
   const [statistiche, setStatistiche] = useState(null)
   const [umoriRecenti, setUmoriRecenti] = useState([])
@@ -26,7 +27,7 @@ function DashboardPage() {
         setUmoriRecenti(rispostaUmore.moods?.slice(0, 5) || [])
         setBadgeOttenuti(rispostaBadge.earned?.slice(0, 6) || [])
       } catch {
-        // Qui evito toast invasivi: se fallisce una sezione mostro la pagina comunque.
+        // Evito toast invasivi: se fallisce una sezione mostro comunque la pagina.
       } finally {
         setCaricamento(false)
       }
@@ -41,9 +42,9 @@ function DashboardPage() {
     { to: '/mood', icon: '📊', label: 'Registra umore', color: '#E0F7F4' },
     { to: '/journal', icon: '📝', label: 'Scrivi nel diario', color: '#FFE8E8' },
     { to: '/mindfulness', icon: '🧘', label: 'Mindfulness', color: '#FFF8E1' },
-    { to: '/chatbot', icon: '🤖', label: 'Parla con l\'AI', color: '#E8F0FE' },
+    { to: '/chatbot', icon: '🤖', label: 'Chat di supporto', color: '#E8F0FE' },
     { to: '/community', icon: '💬', label: 'Community', color: '#F3E5F5' },
-    { to: '/crisis', icon: '🆘', label: 'Supporto crisi', color: '#FFE8E8' },
+    { to: '/crisis', icon: '🆘', label: 'Serve aiuto subito?', color: '#FFE8E8' },
   ]
 
   return (
@@ -66,7 +67,7 @@ function DashboardPage() {
         <div className="grid-4" style={{ marginTop: '0.5rem' }}>
           <div className="stat-card">
             <div className="stat-value">{statistiche.totalMoods}</div>
-            <div className="stat-label">Check-in umore</div>
+            <div className="stat-label">Registrazioni umore</div>
           </div>
           <div className="stat-card">
             <div className="stat-value">{statistiche.totalJournals}</div>
@@ -87,10 +88,10 @@ function DashboardPage() {
         <div className="card">
           <div className="flex-between mb-1">
             <h3>Umore recente</h3>
-            <Link to="/mood" className="btn btn-sm btn-secondary">Vedi tutto</Link>
+            <Link to="/mood" className="btn btn-sm btn-secondary">Apri sezione</Link>
           </div>
           {umoriRecenti.length === 0 && (
-            <p className="text-secondary text-sm">Nessun check-in ancora. Inizia registrando il tuo umore!</p>
+            <p className="text-secondary text-sm">Non hai ancora registrato l'umore. Puoi iniziare quando vuoi.</p>
           )}
           {umoriRecenti.map((umore) => (
             <div key={umore.id} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.5rem 0', borderBottom: '1px solid var(--border-light)' }}>
@@ -106,10 +107,10 @@ function DashboardPage() {
         <div className="card">
           <div className="flex-between mb-1">
             <h3>I tuoi badge</h3>
-            <Link to="/progress" className="btn btn-sm btn-secondary">Tutti i badge</Link>
+            <Link to="/progress" className="btn btn-sm btn-secondary">Vedi progressi</Link>
           </div>
           {badgeOttenuti.length === 0 && (
-            <p className="text-secondary text-sm">Completa attività per sbloccare badge!</p>
+            <p className="text-secondary text-sm">Ogni piccolo passo conta: continua così e arriveranno anche i badge.</p>
           )}
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
             {badgeOttenuti.map((badge) => (

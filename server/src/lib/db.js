@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
+// In questo modulo centralizzo tutta la logica DB: connessione, bootstrap tabelle e query helper.
 const pool = mysql.createPool({
   host: process.env.DB_HOST || "localhost",
   port: parseInt(process.env.DB_PORT || "3306"),
@@ -14,6 +15,7 @@ const pool = mysql.createPool({
 });
 
 export async function initDb() {
+  // All'avvio inizializzo lo schema, così il progetto resta avviabile anche su ambiente nuovo.
   const conn = await pool.getConnection();
   try {
     await conn.query(`

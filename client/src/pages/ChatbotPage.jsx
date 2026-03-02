@@ -4,6 +4,7 @@ import { apiRequest } from '../services/api.js'
 import { isAuthenticated } from '../services/auth.js'
 
 function ChatbotPage() {
+  // Gestisco la chat di supporto: cronologia, invio messaggi e reset conversazione.
   const [messages, setMessages] = useState([])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(true)
@@ -61,8 +62,8 @@ function ChatbotPage() {
       <div className="page-header">
         <div className="flex-between">
           <div>
-            <h1>AI Companion</h1>
-            <p>Un assistente virtuale per il tuo benessere, disponibile 24/7</p>
+            <h1>Chat di supporto</h1>
+            <p>Uno spazio per parlare e ricevere un aiuto rapido, quando ne hai bisogno.</p>
           </div>
           {messages.length > 0 && (
             <button className="btn btn-danger btn-sm" onClick={handleClear}>Cancella chat</button>
@@ -76,7 +77,7 @@ function ChatbotPage() {
             {messages.length === 0 && (
               <div style={{ textAlign: 'center', padding: '3rem 1rem' }}>
                 <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🤖</div>
-                <h3 style={{ margin: '0 0 0.5rem' }}>Ciao! Sono il tuo AI Companion</h3>
+                <h3 style={{ margin: '0 0 0.5rem' }}>Ciao! Sono qui per te</h3>
                 <p className="text-secondary text-sm" style={{ maxWidth: 400, margin: '0 auto' }}>
                   Posso aiutarti con tecniche per l'ansia, lo stress, il sonno,
                   o semplicemente ascoltarti. Scrivimi qualcosa!
@@ -115,7 +116,7 @@ function ChatbotPage() {
       </div>
 
       <div className="alert alert-warning" style={{ marginTop: '0.5rem' }}>
-        Questo chatbot offre supporto generale basato sulla CBT. Non sostituisce il parere di un professionista della salute mentale.
+        Questa chat offre supporto generale e non sostituisce un aiuto professionale.
         In caso di emergenza, contatta il <strong>Telefono Amico (02 2327 2327)</strong> o il <strong>112</strong>.
       </div>
     </section>

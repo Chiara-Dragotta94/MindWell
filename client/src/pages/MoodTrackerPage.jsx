@@ -13,6 +13,7 @@ const MOODS = [
 ]
 
 function MoodTrackerPage() {
+  // Gestisco sia la registrazione dell'umore sia lo storico e i grafici.
   const [umoreSelezionato, setUmoreSelezionato] = useState(null)
   const [livelloEnergia, setLivelloEnergia] = useState(3)
   const [livelloAnsia, setLivelloAnsia] = useState(3)
@@ -88,7 +89,7 @@ function MoodTrackerPage() {
     <section className="page">
       <div className="page-header">
         <h1>Mood Tracker</h1>
-        <p>Monitora il tuo umore quotidianamente per scoprire pattern e migliorare il tuo benessere</p>
+        <p>Segna come stai ogni giorno per capire meglio i tuoi alti e bassi.</p>
       </div>
 
       <div className="tabs">
@@ -140,7 +141,7 @@ function MoodTrackerPage() {
             </div>
 
             <button className="btn btn-primary" type="submit" disabled={salvataggio}>
-              {salvataggio ? 'Salvataggio...' : 'Registra umore'}
+              {salvataggio ? 'Sto salvando...' : 'Registra umore'}
             </button>
           </form>
         </div>
@@ -149,7 +150,7 @@ function MoodTrackerPage() {
       {schedaAttiva === 'storico' && (
         <div className="card">
           <h2>Storico dell'umore</h2>
-          {storicoUmore.length === 0 && <p className="text-secondary">Nessun check-in registrato ancora.</p>}
+          {storicoUmore.length === 0 && <p className="text-secondary">Non hai ancora registrato il tuo umore.</p>}
           {storicoUmore.map((voceUmore) => (
             <div key={voceUmore.id} className="journal-entry">
               <div className="meta flex-between">

@@ -6,6 +6,7 @@ import { isAuthenticated, logout } from '../services/auth.js'
 const AVATAR_COLORS = ['#00B4A0', '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FECA57', '#DDA0DD', '#FF8A65', '#7986CB']
 
 function ProfilePage() {
+  // Concentro tutto ciò che riguarda il profilo: modifica dati e cancellazione account.
   const [profilo, setProfilo] = useState(null)
   const [datiForm, setDatiForm] = useState({ firstName: '', lastName: '', bio: '', birthDate: '', avatarColor: '' })
   const [caricamento, setCaricamento] = useState(true)
@@ -33,7 +34,7 @@ function ProfilePage() {
         avatarColor: risposta.profile.avatar_color || '#00B4A0',
       })
     } catch {
-      // Qui evito rumore in console per non sporcare l'esperienza utente.
+      // Evito rumore in console per non sporcare l'esperienza utente.
     } finally {
       setCaricamento(false)
     }
@@ -46,12 +47,12 @@ function ProfilePage() {
     setSalvataggio(true)
     const regexNome = /^[A-Za-zÀ-ÖØ-öø-ÿ' -]{2,50}$/
     if (!regexNome.test(datiForm.firstName.trim())) {
-      setMessaggioErrore('Nome non valido')
+      setMessaggioErrore('Inserisci un nome valido (solo lettere).')
       setSalvataggio(false)
       return
     }
     if (!regexNome.test(datiForm.lastName.trim())) {
-      setMessaggioErrore('Cognome non valido')
+      setMessaggioErrore('Inserisci un cognome valido (solo lettere).')
       setSalvataggio(false)
       return
     }
@@ -69,7 +70,7 @@ function ProfilePage() {
           lastName: datiForm.lastName.trim(),
         }),
       })
-      setMessaggioSuccesso('Profilo aggiornato con successo!')
+      setMessaggioSuccesso('Profilo aggiornato!')
       caricaProfilo()
     } catch (err) {
       setMessaggioErrore(err.message)
@@ -85,7 +86,7 @@ function ProfilePage() {
       setMessaggioErrore('Inserisci la password per eliminare il profilo')
       return
     }
-    // Qui chiedo una conferma esplicita perché l'azione è irreversibile.
+    // Chiedo una conferma esplicita perché l'azione è irreversibile.
     const confermaEliminazione = window.confirm('Sei sicura di voler eliminare definitivamente il tuo profilo?')
     if (!confermaEliminazione) return
     setEliminazioneInCorso(true)
@@ -169,7 +170,7 @@ function ProfilePage() {
             </div>
           </div>
           <button className="btn btn-primary" type="submit" disabled={salvataggio}>
-            {salvataggio ? 'Salvataggio...' : 'Salva modifiche'}
+            {salvataggio ? 'Sto salvando...' : 'Salva modifiche'}
           </button>
         </form>
       </div>
@@ -177,7 +178,7 @@ function ProfilePage() {
       <div className="card">
         <h3>Elimina profilo</h3>
         <p className="text-secondary text-sm">
-          Solo tu puoi eliminare il tuo profilo. Per sicurezza è richiesta la password.
+          Questa azione elimina tutto il tuo account. Per sicurezza, inserisci la password.
         </p>
         <div className="form-row">
           <label>Password di conferma</label>
@@ -193,7 +194,7 @@ function ProfilePage() {
           onClick={handleDeleteProfile}
           disabled={eliminazioneInCorso}
         >
-          {eliminazioneInCorso ? 'Eliminazione...' : 'Elimina definitivamente il profilo'}
+          {eliminazioneInCorso ? 'Sto eliminando...' : 'Elimina profilo'}
         </button>
       </div>
     </section>

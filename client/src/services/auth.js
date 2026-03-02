@@ -7,13 +7,21 @@ export function getCurrentUser() {
 }
 
 export function saveAuth(user, token) {
+  // Salvo user+token in locale per mantenere la sessione tra refresh.
   window.localStorage.setItem(USER_KEY, JSON.stringify(user))
   setToken(token)
 }
 
-export function logout() {
-  setToken(null)
-  window.localStorage.removeItem(USER_KEY)
+export async function logout() {
+  // Provo prima a notificare il logout al backend, poi chiudo sempre la sessione locale.
+  try {
+    await apiRequest('/auth/logout', { method: 'POST' })
+  } catch {
+    // Anche se la chiamata API fallisce, chiudo comunque la sessione locale.
+  } finally {
+    setToken(null)
+    window.localStorage.removeItem(USER_KEY)
+  }
 }
 
 export async function register(payload) {

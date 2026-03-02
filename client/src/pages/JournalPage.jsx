@@ -4,6 +4,7 @@ import { apiRequest } from '../services/api.js'
 import { isAuthenticated } from '../services/auth.js'
 
 function JournalPage() {
+  // Offro uno spazio di scrittura guidata con storico delle voci personali.
   const [prompts, setPrompts] = useState([])
   const [entries, setEntries] = useState([])
   const [selectedPrompt, setSelectedPrompt] = useState(null)
@@ -11,7 +12,6 @@ function JournalPage() {
   const [situation, setSituation] = useState('')
   const [thought, setThought] = useState('')
   const [emotions, setEmotions] = useState('')
-  const [distortion, setDistortion] = useState('')
   const [rational, setRational] = useState('')
   const [tab, setTab] = useState('scrivi')
   const [loading, setLoading] = useState(true)
@@ -38,7 +38,7 @@ function JournalPage() {
 
   const resetForm = () => {
     setContent(''); setSituation(''); setThought('')
-    setEmotions(''); setDistortion(''); setRational('')
+    setEmotions(''); setRational('')
     setSelectedPrompt(null)
   }
 
@@ -51,7 +51,7 @@ function JournalPage() {
         method: 'POST',
         body: JSON.stringify({
           promptId: selectedPrompt?.id, content, situation,
-          automaticThought: thought, emotions, cognitiveDistortion: distortion,
+          automaticThought: thought, emotions,
           rationalResponse: rational
         })
       })
@@ -71,17 +71,11 @@ function JournalPage() {
 
   if (loading) return <div className="loading-page"><div className="loading-spinner" /></div>
 
-  const DISTORTIONS = [
-    'Catastrofizzazione', 'Pensiero tutto-o-nulla', 'Lettura del pensiero',
-    'Generalizzazione', 'Filtro mentale negativo', 'Squalifica del positivo',
-    'Doverizzazione', 'Etichettamento', 'Personalizzazione', 'Ragionamento emotivo'
-  ]
-
   return (
     <section className="page">
       <div className="page-header">
-        <h1>Diario CBT</h1>
-        <p>Scrittura terapeutica guidata per esplorare i tuoi pensieri e le tue emozioni</p>
+        <h1>Diario personale</h1>
+        <p>Uno spazio semplice e sicuro per capire meglio come stai.</p>
       </div>
 
       <div className="tabs">
@@ -94,7 +88,7 @@ function JournalPage() {
           <div className="card">
             <h3>Scegli un prompt (opzionale)</h3>
             <p className="text-sm text-secondary mb-2">
-              I prompt ti guidano nell'esplorazione dei tuoi pensieri usando tecniche della Terapia Cognitivo-Comportamentale.
+              I prompt sono piccole domande guida per aiutarti a mettere ordine nei pensieri.
             </p>
             <div className="grid-2">
               {prompts.map((p) => (
@@ -135,13 +129,6 @@ function JournalPage() {
                     <input type="text" value={emotions} onChange={(e) => setEmotions(e.target.value)} placeholder="Es. tristezza, ansia, rabbia..." />
                   </div>
                   <div className="form-row">
-                    <label>Distorsione cognitiva</label>
-                    <select value={distortion} onChange={(e) => setDistortion(e.target.value)}>
-                      <option value="">Seleziona (opzionale)</option>
-                      {DISTORTIONS.map(d => <option key={d} value={d}>{d}</option>)}
-                    </select>
-                  </div>
-                  <div className="form-row">
                     <label>Pensiero alternativo</label>
                     <textarea value={rational} onChange={(e) => setRational(e.target.value)} placeholder="Qual è un modo più equilibrato di vedere la situazione?" rows={2} />
                   </div>
@@ -156,7 +143,7 @@ function JournalPage() {
                 />
               </div>
               <button className="btn btn-primary" type="submit" disabled={saving}>
-                {saving ? 'Salvataggio...' : 'Salva nel diario'}
+                {saving ? 'Sto salvando...' : 'Salva nel diario'}
               </button>
             </form>
           </div>
@@ -179,7 +166,6 @@ function JournalPage() {
               {entry.situation && <div className="text-sm mt-1"><strong>Situazione:</strong> {entry.situation}</div>}
               {entry.automatic_thought && <div className="text-sm"><strong>Pensiero:</strong> {entry.automatic_thought}</div>}
               {entry.emotions && <div className="text-sm"><strong>Emozioni:</strong> {entry.emotions}</div>}
-              {entry.cognitive_distortion && <div className="text-sm"><strong>Distorsione:</strong> {entry.cognitive_distortion}</div>}
               {entry.rational_response && <div className="text-sm"><strong>Pensiero alternativo:</strong> {entry.rational_response}</div>}
               <div className="content" style={{ marginTop: '0.5rem' }}>{entry.content}</div>
             </div>

@@ -6,6 +6,7 @@ import { authRequired } from "../middleware/auth.js";
 const router = express.Router();
 
 router.get("/", authRequired, async (req, res) => {
+  // In questa rotta leggo il profilo completo dell'utente autenticato.
   try {
     const utente = await dbGet(
       `SELECT id, first_name, last_name, email, birth_date, bio, avatar_color, streak_days, created_at
@@ -21,12 +22,13 @@ router.get("/", authRequired, async (req, res) => {
 });
 
 router.put("/", authRequired, async (req, res) => {
+  // In questa rotta aggiorno solo i campi ricevuti, mantenendo invariati gli altri.
   try {
     const { firstName, lastName, bio, birthDate, avatarColor } = req.body;
     const regexNome = /^[A-Za-zÀ-ÖØ-öø-ÿ' -]{2,50}$/;
     const regexColore = /^#[0-9A-Fa-f]{6}$/;
 
-    // Qui valido il payload anche lato server per non fidarmi solo del frontend.
+    // In questo punto valido il payload lato server per non fidarmi solo del frontend.
     if (firstName && !regexNome.test(firstName.trim())) {
       return res.status(400).json({ error: "Nome non valido" });
     }
@@ -71,6 +73,7 @@ router.put("/", authRequired, async (req, res) => {
 });
 
 router.delete("/", authRequired, async (req, res) => {
+  // In questa rotta richiedo password di conferma per prevenire eliminazioni accidentali.
   try {
     const { password } = req.body;
     if (!password) {
@@ -96,6 +99,7 @@ router.delete("/", authRequired, async (req, res) => {
 });
 
 router.get("/stats", authRequired, async (req, res) => {
+  // In questa rotta calcolo un riepilogo numerico usato nella dashboard.
   try {
     const idUtente = req.user.id;
     const [umori, diari, obiettivi, badge, postCommunity] = await Promise.all([

@@ -3,6 +3,7 @@ import { useNavigate, Link, useLocation } from 'react-router-dom'
 import { isAuthenticated, login } from '../services/auth.js'
 
 function LoginPage({ onAuth }) {
+  // Valido i campi base e poi apro la sessione utente tramite API.
   const [datiForm, setDatiForm] = useState({ email: '', password: '' })
   const [errore, setErrore] = useState(null)
   const [caricamento, setCaricamento] = useState(false)
@@ -22,7 +23,7 @@ function LoginPage({ onAuth }) {
     setErrore(null)
     const emailNormalizzata = datiForm.email.trim().toLowerCase()
     if (!emailNormalizzata || !datiForm.password) {
-      setErrore('Email e password sono obbligatorie')
+      setErrore('Inserisci email e password per continuare.')
       return
     }
     setCaricamento(true)
@@ -57,7 +58,7 @@ function LoginPage({ onAuth }) {
             <input type="password" name="password" required value={datiForm.password} onChange={handleChange} placeholder="La tua password" />
           </div>
           <button className="btn btn-primary btn-lg" type="submit" disabled={caricamento} style={{ width: '100%', justifyContent: 'center' }}>
-            {caricamento ? 'Accesso...' : 'Accedi'}
+            {caricamento ? 'Sto entrando...' : 'Accedi'}
           </button>
         </form>
         <p className="text-center text-sm mt-2">

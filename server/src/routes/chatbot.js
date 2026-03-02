@@ -4,6 +4,7 @@ import { authRequired } from "../middleware/auth.js";
 
 const router = express.Router();
 
+// In questa mappa preparo risposte predefinite per offrire supporto immediato senza dipendenze esterne.
 const RESPONSES = {
   ansia: [
     "L'ansia può essere davvero opprimente. Ricorda che quello che senti è una risposta naturale del corpo. Proviamo un esercizio: inspira per 4 secondi, trattieni per 4, espira per 6. Ripeti 3 volte.",
@@ -45,6 +46,7 @@ const RESPONSES = {
 };
 
 function detectIntent(message) {
+  // In questa funzione classifico in modo semplice il messaggio per scegliere la risposta più utile.
   const lower = message.toLowerCase();
   if (/\b(ciao|buongiorno|buonasera|salve|hey|hi|hello)\b/.test(lower)) return "saluto";
   if (/\b(grazie|thanks|ringrazi)\b/.test(lower)) return "grazie";
@@ -57,6 +59,7 @@ function detectIntent(message) {
 }
 
 router.get("/history", authRequired, async (req, res) => {
+  // In questa rotta ritorno la cronologia completa della chat utente.
   try {
     const messages = await dbAll(
       `SELECT id, role, content, created_at FROM chat_messages
@@ -71,6 +74,7 @@ router.get("/history", authRequired, async (req, res) => {
 });
 
 router.post("/message", authRequired, async (req, res) => {
+  // In questa rotta salvo domanda/risposta e restituisco il reply scelto in base all'intent.
   try {
     const { content } = req.body;
     if (!content?.trim()) {

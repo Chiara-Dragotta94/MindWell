@@ -17,6 +17,7 @@ const GROUNDING_STEPS = [
 ]
 
 function CrisisPage() {
+  // Raccolgo in un solo punto i riferimenti urgenti e gli esercizi rapidi di grounding.
   return (
     <section className="page">
       <div className="crisis-card">
@@ -45,9 +46,9 @@ function CrisisPage() {
       </div>
 
       <div className="card card-teal">
-        <h2>Tecnica di radicamento (Grounding) 5-4-3-2-1</h2>
+        <h2>Esercizio 5-4-3-2-1 per ritrovare calma</h2>
         <p className="text-secondary mb-2">
-          Se stai avendo un attacco di panico o ti senti sopraffatto/a, questa tecnica ti aiuta
+          Se ti senti sopraffatto/a, questo esercizio ti aiuta
           a riportare l'attenzione al momento presente.
         </p>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
@@ -107,8 +108,8 @@ function CrisisPage() {
         <ul style={{ paddingLeft: '1.25rem', lineHeight: 2, color: 'var(--text-secondary)' }}>
           <li>Non devi affrontare tutto da solo/a. Chiedere aiuto è un segno di forza.</li>
           <li>Il dolore che senti ora non sarà per sempre. Le emozioni sono temporanee.</li>
-          <li>Un professionista della salute mentale può aiutarti a trovare le strategie giuste.</li>
-          <li>Questa app non sostituisce una terapia professionale, ma può essere un supporto quotidiano.</li>
+          <li>Parlare con una persona esperta può darti un sostegno concreto.</li>
+          <li>Questa app non sostituisce un percorso con uno specialista, ma può aiutarti ogni giorno.</li>
         </ul>
       </div>
     </section>

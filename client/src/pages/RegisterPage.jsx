@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom'
 import { isAuthenticated, register } from '../services/auth.js'
 
 function RegisterPage({ onAuth }) {
+  // Applico validazioni progressive prima di creare l'account via API.
   const [datiForm, setDatiForm] = useState({
     firstName: '', lastName: '', email: '', password: '', confirmPassword: '', birthDate: ''
   })
@@ -27,14 +28,14 @@ function RegisterPage({ onAuth }) {
     const regexNome = /^[A-Za-zÀ-ÖØ-öø-ÿ' -]{2,50}$/
     const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
-    // Qui applico una validazione lato client chiara e progressiva,
+    // Applico una validazione lato client chiara e progressiva,
     // così guido subito l'utente prima ancora di chiamare l'API.
     if (datiForm.password !== datiForm.confirmPassword) {
-      setErrore('Le password non coincidono')
+      setErrore('Le due password non coincidono. Riprova con calma.')
       return
     }
     if (!regexNome.test(nomePulito) || !regexNome.test(cognomePulito)) {
-      setErrore('Nome e cognome devono avere 2-50 lettere e non contenere numeri')
+      setErrore('Nome e cognome devono contenere solo lettere (minimo 2).')
       return
     }
     if (!regexEmail.test(emailNormalizzata)) {
@@ -65,12 +66,12 @@ function RegisterPage({ onAuth }) {
           ? 1
           : 0)
       if (eta < 16) {
-        setErrore('Devi avere almeno 16 anni per registrarti')
+        setErrore('Per registrarti devi avere almeno 16 anni.')
         return
       }
     }
     if (nomePulito === cognomePulito) {
-      setErrore('Nome e cognome non possono essere uguali')
+      setErrore('Nome e cognome non possono essere uguali.')
       return
     }
 
@@ -126,7 +127,7 @@ function RegisterPage({ onAuth }) {
             <input type="password" name="confirmPassword" required value={datiForm.confirmPassword} onChange={handleChange} placeholder="Ripeti la password" />
           </div>
           <button className="btn btn-primary btn-lg" type="submit" disabled={caricamento} style={{ width: '100%', justifyContent: 'center' }}>
-            {caricamento ? 'Registrazione...' : 'Registrati'}
+            {caricamento ? 'Sto creando il tuo account...' : 'Registrati'}
           </button>
         </form>
         <p className="text-center text-sm mt-2">

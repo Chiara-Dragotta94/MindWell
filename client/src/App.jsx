@@ -17,6 +17,7 @@ import ProgressPage from './pages/ProgressPage.jsx'
 import ProtectedRoute from './components/ProtectedRoute.jsx'
 
 function App() {
+  // Gestisco lo stato globale dell'utente e la navigazione principale dell'app.
   const [utente, setUtente] = useState(getCurrentUser())
   const [menuAperto, setMenuAperto] = useState(false)
   const navigate = useNavigate()
@@ -33,8 +34,8 @@ function App() {
     return () => window.removeEventListener('storage', aggiornaUtenteDaStorage)
   }, [])
 
-  const gestisciLogout = () => {
-    logout()
+  const gestisciLogout = async () => {
+    await logout()
     setUtente(null)
     navigate('/')
   }
@@ -68,7 +69,7 @@ function App() {
               <Link to="/journal" className={classeLinkAttivo('/journal')}>Diario</Link>
               <Link to="/mindfulness" className={classeLinkAttivo('/mindfulness')}>Mindfulness</Link>
               <Link to="/community" className={classeLinkAttivo('/community')}>Community</Link>
-              <Link to="/chatbot" className={classeLinkAttivo('/chatbot')}>AI Chat</Link>
+              <Link to="/chatbot" className={classeLinkAttivo('/chatbot')}>Chat supporto</Link>
               <Link to="/progress" className={classeLinkAttivo('/progress')}>Progressi</Link>
               <Link to="/profile" className={classeLinkAttivo('/profile')}>Profilo</Link>
               <button className="btn-logout" onClick={gestisciLogout}>Esci</button>
