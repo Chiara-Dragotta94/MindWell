@@ -1,8 +1,9 @@
 # MindWell
 
-MindWell e una web-app full stack con autenticazione utenti (registrazione, login, logout) e API REST.
+MindWell e una web-app full stack dedicata al benessere psicologico quotidiano.
+Il progetto include autenticazione utenti, API REST e una SPA moderna lato frontend.
 
-## Stack
+## Tecnologie
 
 - Frontend: React + Vite
 - Backend: Node.js + Express
@@ -11,10 +12,10 @@ MindWell e una web-app full stack con autenticazione utenti (registrazione, logi
 ## Funzionalita principali
 
 - Registrazione, login e logout utenti
-- Profilo utente modificabile
+- Profilo utente con modifica dati personali
 - Diario personale con prompt guidati
-- Monitoraggio umore con grafici
-- Obiettivi e badge progresso
+- Monitoraggio umore con storico e grafici
+- Obiettivi personali e sistema badge
 - Community con post, commenti e like
 - Chat di supporto
 
@@ -22,7 +23,7 @@ MindWell e una web-app full stack con autenticazione utenti (registrazione, logi
 
 ### 1) Database
 
-Avvia MySQL (es. da XAMPP) e crea il database:
+Assicurati che MySQL sia attivo, poi crea il database:
 
 ```sql
 CREATE DATABASE mindwell;
@@ -64,7 +65,7 @@ cd client
 npm run build
 ```
 
-## Note deploy
+## Deploy
 
-Il frontend puo essere pubblicato su GitHub Pages.
-Per usare l'app anche con PC spento, il backend deve essere online su un hosting server (non localhost/XAMPP).
+- Frontend: pubblicabile su GitHub Pages
+- Backend: deploy su un hosting Node.js con supporto a MySQL
