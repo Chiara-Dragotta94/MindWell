@@ -16,7 +16,12 @@ export async function apiRequest(path, options = {}) {
   const token = getToken()
   if (token) headers.Authorization = `Bearer ${token}`
 
-  const res = await fetch(`${API_BASE}${path}`, { ...options, headers })
+  let res
+  try {
+    res = await fetch(`${API_BASE}${path}`, { ...options, headers })
+  } catch {
+    throw new Error('Connessione al server non riuscita. Verifica backend online e configurazione CORS.')
+  }
   const data = await res.json().catch(() => ({}))
   if (!res.ok) throw new Error(data.error || 'Errore nella richiesta')
   return data

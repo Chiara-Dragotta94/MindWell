@@ -21,11 +21,20 @@ const originiConsentite = (process.env.CORS_ORIGINS || "http://localhost:5173")
   .map((voce) => voce.trim())
   .filter(Boolean);
 
+function isOrigineNetlify(origine) {
+  try {
+    const url = new URL(origine);
+    return url.hostname.endsWith(".netlify.app");
+  } catch {
+    return false;
+  }
+}
+
 app.use(
   cors({
     origin: (origine, callback) => {
       // Permetto richieste senza origin (es. Postman/curl) e quelle presenti in whitelist.
-      if (!origine || originiConsentite.includes(origine)) {
+      if (!origine || originiConsentite.includes(origine) || isOrigineNetlify(origine)) {
         callback(null, true);
       } else {
         callback(new Error("Origine CORS non consentita"));
