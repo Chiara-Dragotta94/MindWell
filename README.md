@@ -65,7 +65,37 @@ cd client
 npm run build
 ```
 
-## Deploy
+## Deploy demo funzionante (backend pubblico + Netlify)
 
-- Frontend: pubblicabile su GitHub Pages
-- Backend: deploy su un hosting Node.js con supporto a MySQL
+### 1) Deploy backend su una piattaforma Node.js + MySQL
+
+1. Crea un servizio backend da repository GitHub sulla piattaforma che preferisci (es. Render, Fly.io, ecc.).
+2. Collega o crea un database MySQL.
+3. Nelle variabili del servizio backend imposta:
+   - `PORT=4000`
+   - `JWT_SECRET=<una chiave lunga e sicura>`
+   - `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME` con i valori del database MySQL
+   - `CORS_ORIGINS=http://localhost:5173,https://tuo-sito.netlify.app`
+4. Avvia il deploy e verifica `https://tuo-backend.example.com/api/health`.
+
+### 2) Deploy frontend su Netlify
+
+Il repository include il file `netlify.toml` (gia pronto) con:
+- `base = client`
+- `command = npm run build`
+- `publish = dist`
+
+1. Su Netlify crea un nuovo sito da repository GitHub.
+2. Netlify leggera automaticamente `netlify.toml`.
+3. In `Site settings > Environment variables` crea:
+   - `VITE_API_BASE_URL = https://tuo-backend.example.com/api`
+4. Esegui deploy (o triggera un redeploy dopo aver inserito la variabile).
+5. Apri il sito: `https://tuo-sito.netlify.app`.
+
+### 3) Verifica finale demo
+
+- Registrazione e login funzionanti dal link pubblico
+- Creazione voce diario
+- Inserimento mood
+- Apertura community e chat di supporto
+- Nessun errore CORS o `Failed to fetch` in console
